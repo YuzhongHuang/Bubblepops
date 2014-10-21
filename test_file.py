@@ -7,7 +7,6 @@ Created on Sun Oct 19 13:01:36 2014
 
 """
 Anders Johnson
-Toni Saylor
 Yuzhong Huang
 
 Software Design
@@ -26,6 +25,7 @@ import time
 
 
 class BubbleModel:
+    """ Create a model for our bubble pop game"""
     def __init__(self):
         color_list=[(200,0,250),(250,150,150),(80,80,200),(10,255,200)]
         self.shooter=Shooter([320,480],[320,450],5)
