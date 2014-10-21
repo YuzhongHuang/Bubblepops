@@ -46,8 +46,17 @@ class BubbleModel:
                 bubble = Bubble(bubble_color, (x_odd, y_odd))
                 self.bubbles.append(bubble)
 
-    # Collision detection function
-    # def collision(self):
+    def update(self):
+        if self.bubbleshooter.moving:
+            xn = 0
+            yn = 0
+            a1 = self.bubbleshooter.pos[0] - 320
+            b1 = 480 - self.bubbleshooter.pos[1]
+            xn += a1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
+            yn += b1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
+            self.bubbleshooter.pos[0] += int(xn)
+            self.bubbleshooter.pos[1] -= int(yn)
+        # Collision detection function
 
 class Bubble():
     """Build a class for bubble layout"""
@@ -71,6 +80,7 @@ class BubbleShooter():
     def __init__(self, color, pos):
         self.color = color
         self.pos = pos
+        self.moving = False
 
 
 class BubbleWindowView:
@@ -111,18 +121,20 @@ class BubbleController:
 
     # Uses MOUSEMOTION to track the mouse location and have the bubble
     # shooter rotate as a result
-    def handle_mouse_event(self, event):
-        first_click = True
-        click = pygame.mouse.get_pressed() != (1, 0, 0)
+    def handle_event(self, event):
+        #first_click = True
+        click = pygame.mouse.get_pressed() == (1, 0, 0)
         if event.type == MOUSEMOTION:
             a = math.atan2((event.pos[0] - 320), (480 - event.pos[1]))
             self.model.shooter.end[0] = 30 * math.sin(a) + 320
             self.model.shooter.end[1] = 480 - 30 * math.cos(a)
-        if event.type == MOUSEMOTION and click:
-            a = math.atan2((event.pos[0] - 320), (480 - event.pos[1]))
-            self.model.bubbleshooter.pos[0] = int(46 * math.sin(a) + 320)
-            self.model.bubbleshooter.pos[1] = int(480 - 46 * math.cos(a))
-        if not click:
+            if not self.model.bubbleshooter.moving:
+                a = math.atan2((event.pos[0] - 320), (480 - event.pos[1]))
+                self.model.bubbleshooter.pos[0] = int(46 * math.sin(a) + 320)
+                self.model.bubbleshooter.pos[1] = int(480 - 46 * math.cos(a))
+        if click:
+            self.model.bubbleshooter.moving=True
+        """if not click:
             first_click = False
         xn = 0
         yn = 0
@@ -134,7 +146,7 @@ class BubbleController:
                 yn += b1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
                 self.model.bubbleshooter.pos[0] += int(xn)
                 self.model.bubbleshooter.pos[1] -= int(yn)
-
+        """
 
 def main():
     """This section runs the code for our game"""
@@ -171,7 +183,8 @@ def main():
             if event.type == QUIT:
                 running = False
             else:
-                controller.handle_mouse_event(event)
+                controller.handle_event(event)
+        model.update()
         view.draw()
         time.sleep(.001)
 
