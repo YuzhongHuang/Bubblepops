@@ -49,7 +49,6 @@ class BubbleModel:
     # Collision detection function
     # def collision(self):
 
-
 class Bubble():
     """Build a class for bubble layout"""
     def __init__(self, color, pos, radius=16):
