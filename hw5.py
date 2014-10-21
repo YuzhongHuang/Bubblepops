@@ -79,14 +79,15 @@ class BubbleWindowView:
 
     # Create the start menu
     def start_screen(self):
+        black = (0, 0, 0)
         header = pygame.font.SysFont("timesnewroman", 50)
         starter = pygame.font.SysFont("timesnewroman", 50)
         title = header.render("Bubble Pop!", True, black)
         play = header.render("Play", True, black)
         pic = pygame.image.load("background_scaled.png").convert()
-        screen.blit(pic, (0, 0))
-        screen.blit(title, (200, 70))
-        screen.blit(play, (280, 360))
+        self.screen.blit(pic, (0, 0))
+        self.screen.blit(title, (200, 70))
+        self.screen.blit(play, (280, 360))
         pygame.display.update()
 
     # Draw the features of the game
@@ -129,20 +130,18 @@ class BubbleController:
                 b1 = 480 - self.model.bubbleshooter.pos[1]
                 xn += a1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
                 yn += b1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
-                self.model.bubbleshooter.pos[0] = self.model.bubbleshooter.pos[0] + int(xn)
-                self.model.bubbleshooter.pos[1] = self.model.bubbleshooter.pos[1] - int(yn)
+                self.model.bubbleshooter.pos[0] += int(xn)
+                self.model.bubbleshooter.pos[1] -= int(yn)
 
-if __name__ == "__main__":
+
+def main():
     """This section runs the code for our game"""
-    # Declare global variables
-    black = (0, 0, 0)
-    white = (255, 255, 255)
-    pic_size = (640, 480)
-
     # Initialize pygame
     pygame.init()
+    pic_size = (640, 480)
     screen = pygame.display.set_mode((pic_size))
     pygame.display.set_caption("Bubble Pop!")
+    white = (255, 255, 255)
     screen.fill(white)
 
     # Initialize MVC
@@ -152,15 +151,13 @@ if __name__ == "__main__":
 
     view.start_screen()
 
-    starting = True
-    running = True
+    starting = running = True
 
     # Track the position of the mouse and recognize that "PLAY" is clicked
     while starting:
         for event in pygame.event.get():
             if event.type == QUIT:
-                starting = False
-                running = False
+                starting = running = False
         (x, y) = pygame.mouse.get_pos()
         over_play_button = (x in range(270, 380)) and (y in range(350, 420))
         click = pygame.mouse.get_pressed() == (1, 0, 0)
@@ -177,3 +174,7 @@ if __name__ == "__main__":
         time.sleep(.001)
 
     pygame.quit()
+
+
+if __name__ == "__main__":
+    main()
