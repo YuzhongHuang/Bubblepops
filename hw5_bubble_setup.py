@@ -28,7 +28,7 @@ class BubbleModel():
     def __init__(self):
         self.shooter = Shooter([320,480],[320,450],5)
         self.bubbles = []
-        for x in range(32,624,64):
+        for x in range(16,640,32):
             # for y in range(16,560,32):
             color_list = [(200,0,250),(250,150,150),(80,80,200),(10,255,200)]
             bubble_color = random.choice(color_list)
@@ -48,7 +48,7 @@ class Shooter():
 
 class Bubble():
     """ Build a class for bubble layout"""
-    def __init__(self, color, position, radius=32):
+    def __init__(self, color, position, radius=16):
         self.color = color
         self.position = position
         self.radius = radius
@@ -71,7 +71,7 @@ class BubbleWindowView():
                                pygame.Color(current_bubble.color[0],
                                             current_bubble.color[1],
                                             current_bubble.color[2]), 
-                               current_bubble.position, 32)
+                               current_bubble.position, 16)
             # self.model.bubbles.color[0],
             # self.model.bubbles.color[1], 
             # self.model.bubbles.color[2]),
