@@ -46,12 +46,15 @@ class BubbleModel:
                 bubble = Bubble(bubble_color, (x_odd, y_odd))
                 self.bubbles.append(bubble)
 
+    # Collision detection function
+    # def collision(self):
+
 
 class Bubble():
     """Build a class for bubble layout"""
-    def __init__(self, color, position, radius=16):
+    def __init__(self, color, pos, radius=16):
         self.color = color
-        self.position = position
+        self.pos = pos
         self.radius = radius
 
 
@@ -99,7 +102,7 @@ class BubbleWindowView:
                            self.model.bubbleshooter.pos, 16)
         for current_bubble in self.model.bubbles:
             pygame.draw.circle(self.screen, current_bubble.color,
-                               current_bubble.position, 16)
+                               current_bubble.pos, 16)
         pygame.display.update()
 
 
