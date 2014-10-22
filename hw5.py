@@ -46,17 +46,25 @@ class BubbleModel:
                 bubble = Bubble(bubble_color, (x_odd, y_odd))
                 self.bubbles.append(bubble)
 
+
     def update(self):
+        self.collision()
         if self.bubbleshooter.moving:
             xn = 0
             yn = 0
             a1 = self.bubbleshooter.pos[0] - 320
             b1 = 480 - self.bubbleshooter.pos[1]
-            xn += a1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
-            yn += b1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
+            xn += a1 / math.sqrt(a1**2 + b1**2) * 10
+            yn += b1 / math.sqrt(a1**2 + b1**2) * 10
             self.bubbleshooter.pos[0] += int(xn)
             self.bubbleshooter.pos[1] -= int(yn)
-        # Collision detection function
+
+
+    def collision(self):
+        for bubble in self.bubbles:
+            if math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0])**2 + (self.bubbleshooter.pos[1] - bubble.pos[1])**2) <= 32:
+                self.bubbleshooter.moving = False
+
 
 class Bubble():
     """Build a class for bubble layout"""
@@ -81,6 +89,7 @@ class BubbleShooter():
         self.color = color
         self.pos = pos
         self.moving = False
+
 
 
 class BubbleWindowView:
@@ -123,6 +132,7 @@ class BubbleController:
     # shooter rotate as a result
     def handle_event(self, event):
         #first_click = True
+        self.model.collision()
         click = pygame.mouse.get_pressed() == (1, 0, 0)
         if event.type == MOUSEMOTION:
             a = math.atan2((event.pos[0] - 320), (480 - event.pos[1]))
@@ -133,7 +143,7 @@ class BubbleController:
                 self.model.bubbleshooter.pos[0] = int(46 * math.sin(a) + 320)
                 self.model.bubbleshooter.pos[1] = int(480 - 46 * math.cos(a))
         if click:
-            self.model.bubbleshooter.moving=True
+            self.model.bubbleshooter.moving = True
         """if not click:
             first_click = False
         xn = 0
@@ -142,8 +152,8 @@ class BubbleController:
             for i in range(2):
                 a1 = self.model.bubbleshooter.pos[0] - 320
                 b1 = 480 - self.model.bubbleshooter.pos[1]
-                xn += a1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
-                yn += b1 / math.sqrt(a1 ** 2 + b1 ** 2) * 10
+                xn += a1 / math.sqrt(a1**2 + b1**2) * 10
+                yn += b1 / math.sqrt(a1**2 + b1**2) * 10
                 self.model.bubbleshooter.pos[0] += int(xn)
                 self.model.bubbleshooter.pos[1] -= int(yn)
         """
