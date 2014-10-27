@@ -49,21 +49,65 @@ class BubbleModel:
 
     def update(self):
         self.collision()
+        x_in_range=self.bubbleshooter.pos[0]>=16 and self.bubbleshooter.pos[0]<=624
+        y_in_range=self.bubbleshooter.pos[1]>=16 and self.bubbleshooter.pos[1]<=464
+        
+         
         if self.bubbleshooter.moving:
             xn = 0
             yn = 0
             a1 = self.bubbleshooter.pos[0] - 320
             b1 = 480 - self.bubbleshooter.pos[1]
-            xn += a1 / math.sqrt(a1**2 + b1**2) * 10
-            yn += b1 / math.sqrt(a1**2 + b1**2) * 10
-            self.bubbleshooter.pos[0] += int(xn)
-            self.bubbleshooter.pos[1] -= int(yn)
+            xn += a1 / math.sqrt(a1**2 + b1**2) * 5
+            yn += b1 / math.sqrt(a1**2 + b1**2) * 5
+            flag=True
+            p=0
+            q=0
+            if flag:
+                if xn<=0:
+                    self.bubbleshooter.pos[0] += int(xn-0.5)
+                    self.bubbleshooter.pos[1] -= int(yn+0.5)
+                if xn>0:
+                    self.bubbleshooter.pos[0] += int(xn+0.5)
+                    self.bubbleshooter.pos[1] -= int(yn+0.5)
+            if not x_in_range:                
+                
+                p+=1
+                flag=False
+            if not y_in_range:                
+                
+                q+=1
+                flag=False
+                
+
+            if p%2==1 and q%2==1:                                    
+                self.bubbleshooter.pos[0] -= int(xn+0.5)
+                self.bubbleshooter.pos[1] += int(yn+0.5)
+            if p%2==1 and not q%2==1:
+                self.bubbleshooter.pos[0] -= 3*int(xn+0.5)
+                self.bubbleshooter.pos[1] -= int(yn+0.5)
+            if not p%2==1 and q%2==1:
+                self.bubbleshooter.pos[0] += int(xn+0.5)
+                self.bubbleshooter.pos[1] += int(yn+0.5)
+            
 
 
     def collision(self):
         for bubble in self.bubbles:
-            if math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0])**2 + (self.bubbleshooter.pos[1] - bubble.pos[1])**2) <= 32:
-                self.bubbleshooter.moving = False
+            if math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0])**2 + (self.bubbleshooter.pos[1] - bubble.pos[1])**2) <= 34:
+                if math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0])**2 + (self.bubbleshooter.pos[1] - bubble.pos[1])**2) > 28:
+                    if bubble.pos[0]>=self.bubbleshooter.pos[0]:
+                            new_bubble=Bubble(self.bubbleshooter.color,(bubble.pos[0]-16,bubble.pos[1]+28))
+                            self.bubbles.append(new_bubble)
+                            self.bubbleshooter.moving = False
+                            self.bubbleshooter.stop= False
+                
+                    if bubble.pos[0]<=self.bubbleshooter.pos[0]:                        
+                            new_bubble=Bubble(self.bubbleshooter.color,(bubble.pos[0]+16,bubble.pos[1]+28))
+                            self.bubbles.append(new_bubble)
+                            self.bubbleshooter.moving = False
+                            self.bubbleshooter.stop= False
+                
 
 
 class Bubble():
@@ -89,6 +133,8 @@ class BubbleShooter():
         self.color = color
         self.pos = pos
         self.moving = False
+        self.stop= True
+        self.wall= False
 
 
 
@@ -142,6 +188,10 @@ class BubbleController:
                 a = math.atan2((event.pos[0] - 320), (480 - event.pos[1]))
                 self.model.bubbleshooter.pos[0] = int(46 * math.sin(a) + 320)
                 self.model.bubbleshooter.pos[1] = int(480 - 46 * math.cos(a))
+                if not self.model.bubbleshooter.stop:
+                    self.model.bubbleshooter.color=random.choice([pygame.Color(200, 0, 250), pygame.Color(250, 150, 150),
+                    pygame.Color(80, 80, 200), pygame.Color(10, 255, 200)])
+                    self.model.bubbleshooter.stop= True
         if click:
             self.model.bubbleshooter.moving = True
         """if not click:
