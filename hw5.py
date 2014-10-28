@@ -33,81 +33,128 @@ class BubbleModel:
         self.bubbleshooter = BubbleShooter(random.choice(color_list),
                                            [320, 434])
         self.bubbles = []
-        # Positions for bubbles in with 10 bubbles in row
+        # Positions for bubbles in with 20 bubbles in row
         for x_even in range(16, 640, 32):
             for y_even in range(16, 128, 56):
                 bubble_color = random.choice(color_list)
                 bubble = Bubble(bubble_color, (x_even, y_even))
                 self.bubbles.append(bubble)
-        # Positions for bubbles with 9 bubbles in row
+        # Positions for bubbles with 19 bubbles in row
         for x_odd in range(32, 624, 32):
             for y_odd in range(44, 144, 56):
                 bubble_color = random.choice(color_list)
                 bubble = Bubble(bubble_color, (x_odd, y_odd))
                 self.bubbles.append(bubble)
 
-
     def update(self):
+        """Detects changes to the model and updates the view"""
         self.collision()
-        x_in_range=self.bubbleshooter.pos[0]>=16 and self.bubbleshooter.pos[0]<=624
-        y_in_range=self.bubbleshooter.pos[1]>=16 and self.bubbleshooter.pos[1]<=464
-        
-         
+        x_in_range = self.bubbleshooter.pos[0] >= 16 \
+        and self.bubbleshooter.pos[0] <= 624
+        y_in_range = self.bubbleshooter.pos[1] >= 16 \
+        and self.bubbleshooter.pos[1] <= 464
+        # allows the ball to bounce off the wall
         if self.bubbleshooter.moving:
             xn = 0
             yn = 0
             a1 = self.bubbleshooter.pos[0] - 320
             b1 = 480 - self.bubbleshooter.pos[1]
-            xn += a1 / math.sqrt(a1**2 + b1**2) * 5
-            yn += b1 / math.sqrt(a1**2 + b1**2) * 5
-            flag=True
-            p=0
-            q=0
+            xn += a1 / math.sqrt(a1 ** 2 + b1 ** 2) * 5
+            yn += b1 / math.sqrt(a1 ** 2 + b1 ** 2) * 5
+            flag = True
+            p = 0
+            q = 0
             if flag:
-                if xn<=0:
-                    self.bubbleshooter.pos[0] += int(xn-0.5)
-                    self.bubbleshooter.pos[1] -= int(yn+0.5)
-                if xn>0:
-                    self.bubbleshooter.pos[0] += int(xn+0.5)
-                    self.bubbleshooter.pos[1] -= int(yn+0.5)
-            if not x_in_range:                
-                
-                p+=1
-                flag=False
-            if not y_in_range:                
-                
-                q+=1
-                flag=False
-                
-
-            if p%2==1 and q%2==1:                                    
-                self.bubbleshooter.pos[0] -= int(xn+0.5)
-                self.bubbleshooter.pos[1] += int(yn+0.5)
-            if p%2==1 and not q%2==1:
-                self.bubbleshooter.pos[0] -= 3*int(xn+0.5)
-                self.bubbleshooter.pos[1] -= int(yn+0.5)
-            if not p%2==1 and q%2==1:
-                self.bubbleshooter.pos[0] += int(xn+0.5)
-                self.bubbleshooter.pos[1] += int(yn+0.5)
-            
-
+                if xn <= 0:
+                    self.bubbleshooter.pos[0] += int(xn - 0.5)
+                    self.bubbleshooter.pos[1] -= int(yn + 0.5)
+                if xn > 0:
+                    self.bubbleshooter.pos[0] += int(xn + 0.5)
+                    self.bubbleshooter.pos[1] -= int(yn + 0.5)
+            if not x_in_range:
+                p += 1
+                flag = False
+            if not y_in_range:
+                q += 1
+                flag = False
+            if p % 2 == 1 and q % 2 == 1:
+                self.bubbleshooter.pos[0] -= int(xn + 0.5)
+                self.bubbleshooter.pos[1] += int(yn + 0.5)
+            if p % 2 == 1 and not q % 2 == 1:
+                self.bubbleshooter.pos[0] -= 3 * int(xn + 0.5)
+                self.bubbleshooter.pos[1] -= int(yn + 0.5)
+            if not p % 2 == 1 and q % 2 == 1:
+                self.bubbleshooter.pos[0] += int(xn + 0.5)
+                self.bubbleshooter.pos[1] += int(yn + 0.5)
 
     def collision(self):
+        """ This method detects collisions between the bubbles by determining
+        if the distance between the centers of the bubbles is <= the diameter
+        of a bubble """
         for bubble in self.bubbles:
-            if math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0])**2 + (self.bubbleshooter.pos[1] - bubble.pos[1])**2) <= 34:
-                if math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0])**2 + (self.bubbleshooter.pos[1] - bubble.pos[1])**2) > 28:
-                    if bubble.pos[0]>=self.bubbleshooter.pos[0]:
-                            new_bubble=Bubble(self.bubbleshooter.color,(bubble.pos[0]-16,bubble.pos[1]+28))
-                            self.bubbles.append(new_bubble)
-                            self.bubbleshooter.moving = False
-                            self.bubbleshooter.stop= False
-                
-                    if bubble.pos[0]<=self.bubbleshooter.pos[0]:                        
-                            new_bubble=Bubble(self.bubbleshooter.color,(bubble.pos[0]+16,bubble.pos[1]+28))
-                            self.bubbles.append(new_bubble)
-                            self.bubbleshooter.moving = False
-                            self.bubbleshooter.stop= False
-                
+            if math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0]) ** 2 + \
+            (self.bubbleshooter.pos[1] - bubble.pos[1]) ** 2) <= 34 \
+            and math.sqrt((self.bubbleshooter.pos[0] - bubble.pos[0]) ** 2 + \
+            (self.bubbleshooter.pos[1] - bubble.pos[1]) ** 2) > 28:
+                if bubble.pos[0] >= self.bubbleshooter.pos[0]:
+                    self.bubbleshooter.moving = False
+                    self.bubbleshooter.stop = False
+                    new_bubble = Bubble(self.bubbleshooter.color,
+                                       (bubble.pos[0] - 16, bubble.pos[1] +
+                                        28))
+                    self.bubbles.append(new_bubble)
+                if bubble.pos[0] < self.bubbleshooter.pos[0]:
+                    self.bubbleshooter.moving = False
+                    self.bubbleshooter.stop = False
+                    new_bubble = Bubble(self.bubbleshooter.color,
+                                       (bubble.pos[0] + 16, bubble.pos[1] +
+                                        28))
+                    self.bubbles.append(new_bubble)
+
+                if bubble.color == self.bubbleshooter.color:
+                    if len(self.neighbor(bubble)) >= 1:
+                        self.bubbles.remove(bubble)
+                        a = self.neighbor(bubble)
+                        for pop_bubble in a:
+                            b = self.neighbor(pop_bubble)
+                            for pop_bubble in b:
+                                if pop_bubble in self.bubbles:
+                                    self.bubbles.remove(pop_bubble)
+                        for pop_bubble in a:
+                            if pop_bubble in self.bubbles:
+                                self.bubbles.remove(pop_bubble)
+
+    def is_surrounding(self, contact_bubble, other):
+        """Determines which bubbles are surrounding the bubble that
+        was contacted"""
+        surrounding_list = [(contact_bubble.pos[0] + 32,
+                            contact_bubble.pos[1]), (contact_bubble.pos[0] -
+                            32, contact_bubble.pos[1]),
+                            (contact_bubble.pos[0] + 16, contact_bubble.pos[1]
+                            + 28), (contact_bubble.pos[0] - 16,
+                            contact_bubble.pos[1] + 28), (contact_bubble.pos[0]
+                            + 16, contact_bubble.pos[1] - 28),
+                            (contact_bubble.pos[0] - 16, contact_bubble.pos[1]
+                            - 28)]
+        for i in surrounding_list:
+            if other.pos == i:
+                return True
+        return False
+
+    def neighbor(self, contact_bubble):
+        """Wrapper method for add_neighbor"""
+        neighbor_list = []
+        neighbor_list = self.add_neighbor(neighbor_list, contact_bubble)
+        return neighbor_list
+
+    def add_neighbor(self, neighbor_list, contact_bubble):
+        """Creates a list for the affected bubbles"""
+        for o in self.bubbles:  # "o" is for bubbles!
+            if self.is_surrounding(contact_bubble, o) and \
+            o.color == contact_bubble.color and o not in neighbor_list:
+                if o not in contact_bubble.neighbor_list:
+                    contact_bubble.neighbor_list.append(o)
+        return contact_bubble.neighbor_list
 
 
 class Bubble():
@@ -116,10 +163,11 @@ class Bubble():
         self.color = color
         self.pos = pos
         self.radius = radius
+        self.neighbor_list = []
 
 
 class Shooter():
-    """Bulid a class for creating the shooter"""
+    """Build a class for creating the shooter"""
     def __init__(self, start, end, width):
         self.color = (255, 255, 0)
         self.width = width
@@ -133,9 +181,8 @@ class BubbleShooter():
         self.color = color
         self.pos = pos
         self.moving = False
-        self.stop= True
-        self.wall= False
-
+        self.stop = True
+        self.wall = False
 
 
 class BubbleWindowView:
@@ -189,24 +236,14 @@ class BubbleController:
                 self.model.bubbleshooter.pos[0] = int(46 * math.sin(a) + 320)
                 self.model.bubbleshooter.pos[1] = int(480 - 46 * math.cos(a))
                 if not self.model.bubbleshooter.stop:
-                    self.model.bubbleshooter.color=random.choice([pygame.Color(200, 0, 250), pygame.Color(250, 150, 150),
+                    self.model.bubbleshooter.color = \
+                    random.choice([pygame.Color(200, 0, 250), \
+                    pygame.Color(250, 150, 150),
                     pygame.Color(80, 80, 200), pygame.Color(10, 255, 200)])
-                    self.model.bubbleshooter.stop= True
+                    self.model.bubbleshooter.stop = True
         if click:
             self.model.bubbleshooter.moving = True
-        """if not click:
-            first_click = False
-        xn = 0
-        yn = 0
-        if not first_click:
-            for i in range(2):
-                a1 = self.model.bubbleshooter.pos[0] - 320
-                b1 = 480 - self.model.bubbleshooter.pos[1]
-                xn += a1 / math.sqrt(a1**2 + b1**2) * 10
-                yn += b1 / math.sqrt(a1**2 + b1**2) * 10
-                self.model.bubbleshooter.pos[0] += int(xn)
-                self.model.bubbleshooter.pos[1] -= int(yn)
-        """
+
 
 def main():
     """This section runs the code for our game"""
@@ -249,7 +286,6 @@ def main():
         time.sleep(.001)
 
     pygame.quit()
-
 
 if __name__ == "__main__":
     main()
