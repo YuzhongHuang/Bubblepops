@@ -5,8 +5,7 @@ HW5 README
 
 How to play Bubblepop!
 
-1. Open file in Sublime (preferably)
-2. Press “Ctrl+B” to open game once Sublime is open
+1. Run hw5.py in python
 3. Click the play button to play game
 4. Move the mouse around to aim the shooter
 5. Click the left mouse button to fire the bubble
